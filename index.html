@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#0c1730" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Fire Range</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <!-- lets the sources run from any static server without npm; Vite resolves `three` from node_modules instead -->
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" crossorigin src="./assets/index-BYuPPMwN.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-zqWsaf1D.css">
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <div id="hud">
+    <div id="lanes-ui"></div>
+    <div id="popups"></div>
+    <!-- top bar: profile (left), coins + parts (centre), arsenal + duel (right) -->
+    <div id="topbar">
+      <button id="profile-btn" class="top-chip" aria-label="Профиль"><span class="ava"></span><span class="pf-text"><b class="pf-name"></b><small class="pf-trophy"></small></span></button>
+      <div id="currencies">
+        <div id="wallet">
+          <div class="coin">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="26" r="21" fill="#c97d04" />
+              <circle cx="24" cy="23.5" r="21" fill="#ffc21c" />
+              <circle cx="24" cy="23.5" r="15.5" fill="#f2a60e" />
+              <path d="M11 17a15 15 0 0 1 21-8" fill="none" stroke="#ffe37a" stroke-width="3" stroke-linecap="round" />
+              <text x="24" y="32" text-anchor="middle" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="24" fill="#fff1b8" stroke="#c27400" stroke-width="2" paint-order="stroke">$</text>
+            </svg>
+          </div>
+          <span id="money">0</span>
+        </div>
+        <div id="parts" title="Детали: разбери оружие в арсенале, покупай за них новое"><i class="gear"></i><span id="parts-n">0</span></div>
+      </div>
+      <div class="top-right">
+        <button id="arsenal-btn" class="top-chip"><i class="ti crate"></i><span>Арсенал</span></button>
+        <button id="duel-btn" class="top-chip duel"><i class="ti swords"></i><span>Дуэль</span></button>
+      </div>
+    </div>
+    <!-- evolution trial: dims everything but the zoomed lane, clock + goal on top, banners in the middle -->
+    <div id="evo" class="off">
+      <div class="evo-dim top"></div>
+      <div class="evo-dim bottom"></div>
+      <div class="evo-bar">
+        <div class="evo-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8.5" fill="#f6f0e4" /><circle cx="12" cy="13" r="6.2" fill="#27334b" /><path d="M12 9v4.5l3 2" fill="none" stroke="#ffc533" stroke-width="2.4" stroke-linecap="round" /><rect x="9.5" y="1.8" width="5" height="3" rx="1.2" fill="#f6f0e4" /></svg><b class="evo-time">30</b></div>
+        <div class="evo-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#efdbbb" /><circle cx="12" cy="12" r="8" fill="#5d5b60" /><circle cx="12" cy="12" r="6.2" fill="#efdbbb" /><circle cx="12" cy="12" r="4.4" fill="#f76445" /><circle cx="12" cy="12" r="2" fill="#fbc838" /></svg><b class="evo-goal">0/6</b></div>
+      </div>
+      <button class="evo-leave"><i class="flag"></i>Сдаться</button>
+      <div class="evo-banner">
+        <div class="eb-step"></div>
+        <div class="eb-title"></div>
+        <div class="eb-text"></div>
+        <button class="eb-btn"></button>
+      </div>
+    </div>
+    <!-- bot duel in the hangar: both cards with HP on top, clock in the middle, banners and the leave button -->
+    <div id="duel" class="off">
+      <div class="du-top">
+        <div class="du-card me"><span class="ava"></span><div class="du-info"><b class="du-name"></b><small class="du-gun"></small><div class="du-hp"></div></div></div>
+        <div class="du-mid"><b class="du-vs">VS</b><b class="du-time">60</b></div>
+        <div class="du-card foe"><span class="ava"></span><div class="du-info"><b class="du-name"></b><small class="du-gun"></small><div class="du-hp"></div></div></div>
+      </div>
+      <button class="du-leave"><i class="flag"></i>Сдаться</button>
+      <div class="du-banner">
+        <div class="db-step"></div>
+        <div class="db-title"></div>
+        <div class="db-text"></div>
+        <div class="db-loot"></div>
+        <button class="db-btn"></button>
+      </div>
+    </div>
+    <!-- workshop row: stars and the next opening, big delivery clock, current order (workshop.js) -->
+    <div id="ws-row">
+      <div id="ws-chip"><span class="ws-name"></span><span class="ws-stars">★ <b>0</b></span><div class="ws-bar"><i class="ws-fill"></i></div><small class="ws-next"></small></div>
+      <div id="ws-delivery" class="ws-mini" title="Большая поставка: хлама ×3 и ящик"><span>📦</span><b>8:00</b></div>
+      <div id="ws-order" class="ws-mini" hidden><span>📋</span><b></b><div class="ws-obar"><i></i></div></div>
+    </div>
+    <div id="toasts"></div>
+    <!-- «Ярость»: meter filled by kills; when full the button fires every gun at its tap rate for a while -->
+    <div id="frenzy"><div class="fz-bar"><i></i></div><button class="fz-btn">🔥 ЯРОСТЬ</button><b class="fz-time"></b></div>
+    <div id="ws-banner"><div class="wb-step"></div><div class="wb-title"></div><div class="wb-text"></div><button class="wb-btn">Ок</button></div>
+    <div id="hint">Тапай по хламу — пушка берёт его в цель и стреляет быстрее<br /><small>не успел — пресс заплатит 10% · ⬆ — прокачка и «Ценность партии»: звёзды открывают линии цеха · свайп — другие линии</small></div>
+  </div>
+
+  <!-- Native bunker dock: raised tabs, weapon summary and scrollable upgrade cards. -->
+  <div id="panel" inert>
+    <div class="p-backdrop"></div>
+    <div class="p-sheet">
+      <div class="p-tabs" role="tablist" aria-label="Прокачка оружия"></div>
+      <div class="p-head">
+        <div class="p-thumb"></div>
+        <div class="p-headtext">
+          <div class="p-title"></div>
+          <div class="p-sub"></div>
+        </div>
+        <button class="p-close" aria-label="Закрыть прокачку">✕</button>
+      </div>
+      <div class="p-list"></div>
+      <div class="p-foot"></div>
+    </div>
+  </div>
+
+  <!-- profile, arsenal, duel lobby (menus.js) -->
+  <div id="modal" inert>
+    <div class="m-backdrop"></div>
+    <div class="m-card">
+      <div class="m-tabs dock-tabs" role="tablist" aria-label="Разделы меню"></div>
+      <div class="m-head"><div class="m-title"></div><button class="m-close" aria-label="Закрыть меню">✕</button></div>
+      <div class="m-body"></div>
+    </div>
+  </div>
+
+  <div id="rotate">
+    <div class="phone"></div>
+    <p>Поверни телефон горизонтально</p>
+  </div>
+
+</body>
+</html>
