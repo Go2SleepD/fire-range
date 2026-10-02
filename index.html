@@ -20,13 +20,14 @@
       }
     }
   </script>
-  <script type="module" crossorigin src="./assets/index-QD-ojCjA.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B-MhUJn8.css">
+  <script type="module" crossorigin src="./assets/index-CANwwpPm.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Cr0c6dvP.css">
 </head>
 <body>
   <canvas id="scene"></canvas>
 
   <div id="hud">
+    <div id="run-meta"><b id="run-clock">Забег 0.00 мин</b><small>v0.2.0</small></div>
     <div id="lanes-ui"></div>
     <div id="popups"></div>
     <!-- top bar: profile (left), coins + parts (centre), floors + duel (right) -->
@@ -40,7 +41,7 @@
               <circle cx="24" cy="23.5" r="21" fill="#ffc21c" />
               <circle cx="24" cy="23.5" r="15.5" fill="#f2a60e" />
               <path d="M11 17a15 15 0 0 1 21-8" fill="none" stroke="#ffe37a" stroke-width="3" stroke-linecap="round" />
-              <text x="24" y="32" text-anchor="middle" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="24" fill="#fff1b8" stroke="#c27400" stroke-width="2" paint-order="stroke">$</text>
+              <path d="m24 12 8 11-8 11-8-11Z" fill="#ffeaae" stroke="#c98a17" stroke-width="2"/>
             </svg>
           </div>
           <span id="money">0</span>
@@ -49,7 +50,7 @@
       </div>
       <div class="top-right">
         <button id="floors-btn" class="top-chip"><i class="ti lift"></i><span>Цеха</span></button>
-        <button id="duel-btn" class="top-chip duel"><i class="ti swords"></i><span>Дуэль</span></button>
+        <button id="duel-btn" hidden class="top-chip duel"><i class="ti swords"></i><span>Дуэль</span></button>
       </div>
     </div>
     <!-- evolution trial: dims everything but the zoomed lane, clock + goal on top, banners in the middle -->
@@ -58,7 +59,7 @@
       <div class="evo-dim bottom"></div>
       <div class="evo-bar">
         <div class="evo-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8.5" fill="#f6f0e4" /><circle cx="12" cy="13" r="6.2" fill="#27334b" /><path d="M12 9v4.5l3 2" fill="none" stroke="#ffc533" stroke-width="2.4" stroke-linecap="round" /><rect x="9.5" y="1.8" width="5" height="3" rx="1.2" fill="#f6f0e4" /></svg><b class="evo-time">30</b></div>
-        <div class="evo-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#efdbbb" /><circle cx="12" cy="12" r="8" fill="#5d5b60" /><circle cx="12" cy="12" r="6.2" fill="#efdbbb" /><circle cx="12" cy="12" r="4.4" fill="#f76445" /><circle cx="12" cy="12" r="2" fill="#fbc838" /></svg><b class="evo-goal">0/6</b></div>
+        <div class="evo-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#efdbbb" /><circle cx="12" cy="12" r="8" fill="#5d5b60" /><circle cx="12" cy="12" r="6.2" fill="#efdbbb" /><circle cx="12" cy="12" r="4.4" fill="#f76445" /><circle cx="12" cy="12" r="2" fill="#fbc838" /></svg><b class="evo-goal">0/6</b><div class="evo-goal-track"><i></i></div></div>
       </div>
       <button class="evo-leave"><i class="flag"></i>Сдаться</button>
       <div class="evo-banner">
@@ -92,7 +93,7 @@
       <button id="ws-lift" class="ws-mini" hidden><span>🛗</span>Лифт: <b></b></button>
     </div>
     <!-- quest list: always on screen, a finished quest is claimed with «Забрать» (quests.js) -->
-    <div id="quests"><div class="q-head"><span>📋 Квесты</span><small class="q-count"></small></div><div class="q-list"></div></div>
+    <div id="quests" hidden><div class="q-head"><span>Путь по цеху</span><small class="q-count"></small></div><div class="q-list"></div></div>
     <div id="toasts"></div>
     <!-- first-sighting tutorial: a ring on the new kind of junk and a card about it (tips.js) -->
     <div id="tip-shade"></div>
@@ -103,7 +104,7 @@
     <!-- the ride up: the hall goes dark and comes back in the next workshop's colours -->
     <div id="lift-fade"><span>🛗</span><b></b></div>
     <div id="ws-banner"><div class="wb-step"></div><div class="wb-title"></div><div class="wb-text"></div><button class="wb-btn">Ок</button></div>
-    <div id="hint">Тапай по линии — пушка стреляет быстрее по первому хламу на ленте<br /><small>монеты платит только то, что разбила пушка — пресс не платит · ⬆ — прокачка и «Ценность партии»: звёзды открывают линии цеха · свайп — другие линии</small></div>
+    <div id="hint">Тапай по линии — пушка стреляет быстрее по первому хламу на ленте<br /><small>монеты платит только то, что разбила пушка — пресс не платит · ⬆ — прокачка оружия · звёзды линий открывают цех · свайп — другие линии</small></div>
   </div>
 
   <!-- Native bunker dock: raised tabs, weapon summary and scrollable upgrade cards. -->
