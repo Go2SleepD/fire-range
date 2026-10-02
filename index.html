@@ -20,8 +20,8 @@
       }
     }
   </script>
-  <script type="module" crossorigin src="./assets/index-BYuPPMwN.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-zqWsaf1D.css">
+  <script type="module" crossorigin src="./assets/index-C_F3hz9h.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-cv-g0IjT.css">
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -29,7 +29,7 @@
   <div id="hud">
     <div id="lanes-ui"></div>
     <div id="popups"></div>
-    <!-- top bar: profile (left), coins + parts (centre), arsenal + duel (right) -->
+    <!-- top bar: profile (left), coins + parts (centre), floors + duel (right) -->
     <div id="topbar">
       <button id="profile-btn" class="top-chip" aria-label="Профиль"><span class="ava"></span><span class="pf-text"><b class="pf-name"></b><small class="pf-trophy"></small></span></button>
       <div id="currencies">
@@ -48,7 +48,7 @@
         <div id="parts" title="Детали: разбери оружие в арсенале, покупай за них новое"><i class="gear"></i><span id="parts-n">0</span></div>
       </div>
       <div class="top-right">
-        <button id="arsenal-btn" class="top-chip"><i class="ti crate"></i><span>Арсенал</span></button>
+        <button id="floors-btn" class="top-chip"><i class="ti lift"></i><span>Цеха</span></button>
         <button id="duel-btn" class="top-chip duel"><i class="ti swords"></i><span>Дуэль</span></button>
       </div>
     </div>
@@ -84,17 +84,25 @@
         <button class="db-btn"></button>
       </div>
     </div>
-    <!-- workshop row: stars and the next opening, big delivery clock, current order (workshop.js) -->
+    <!-- workshop row: the floor (tap: floors list), stars and the next opening, big delivery clock (workshop.js) -->
     <div id="ws-row">
-      <div id="ws-chip"><span class="ws-name"></span><span class="ws-stars">★ <b>0</b></span><div class="ws-bar"><i class="ws-fill"></i></div><small class="ws-next"></small></div>
-      <div id="ws-delivery" class="ws-mini" title="Большая поставка: хлама ×3 и ящик"><span>📦</span><b>8:00</b></div>
-      <div id="ws-order" class="ws-mini" hidden><span>📋</span><b></b><div class="ws-obar"><i></i></div></div>
+      <button id="ws-chip"><span class="ws-name"></span><span class="ws-stars">★ <b>0</b></span><div class="ws-bar"><i class="ws-fill"></i></div><small class="ws-next"></small></button>
+      <div id="ws-delivery" class="ws-mini" title="Большая поставка: хлама ×3 на 25 с, ящик монет и детали"><span>📦</span><b>поставка через 8:00</b></div>
+      <!-- the lift to the next workshop, once its boss is down -->
+      <button id="ws-lift" class="ws-mini" hidden><span>🛗</span>Лифт: <b></b></button>
     </div>
+    <!-- quest list: always on screen, a finished quest is claimed with «Забрать» (quests.js) -->
+    <div id="quests"><div class="q-head"><span>📋 Квесты</span><small class="q-count"></small></div><div class="q-list"></div></div>
     <div id="toasts"></div>
+    <!-- first-sighting tutorial: a ring on the new kind of junk and a card about it (tips.js) -->
+    <div id="tip-ring"></div>
+    <div id="tip"><span class="tp-ic"></span><div class="tp-body"><b class="tp-title"></b><p class="tp-text"></p></div><button class="tp-btn">Понятно</button></div>
     <!-- «Ярость»: meter filled by kills; when full the button fires every gun at its tap rate for a while -->
     <div id="frenzy"><div class="fz-bar"><i></i></div><button class="fz-btn">🔥 ЯРОСТЬ</button><b class="fz-time"></b></div>
+    <!-- the ride up: the hall goes dark and comes back in the next workshop's colours -->
+    <div id="lift-fade"><span>🛗</span><b></b></div>
     <div id="ws-banner"><div class="wb-step"></div><div class="wb-title"></div><div class="wb-text"></div><button class="wb-btn">Ок</button></div>
-    <div id="hint">Тапай по хламу — пушка берёт его в цель и стреляет быстрее<br /><small>не успел — пресс заплатит 10% · ⬆ — прокачка и «Ценность партии»: звёзды открывают линии цеха · свайп — другие линии</small></div>
+    <div id="hint">Тапай по хламу — пушка берёт его в цель и стреляет быстрее<br /><small>монеты платит только то, что разбила пушка — пресс не платит · ⬆ — прокачка и «Ценность партии»: звёзды открывают линии цеха · свайп — другие линии</small></div>
   </div>
 
   <!-- Native bunker dock: raised tabs, weapon summary and scrollable upgrade cards. -->
@@ -115,7 +123,7 @@
     </div>
   </div>
 
-  <!-- profile, arsenal, duel lobby (menus.js) -->
+  <!-- profile, floors, duel lobby (menus.js) -->
   <div id="modal" inert>
     <div class="m-backdrop"></div>
     <div class="m-card">
